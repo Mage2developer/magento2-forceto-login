@@ -7,5 +7,5 @@
 <h3><b>Features</b></h3>
 <ul>
 <li>Easy to install and manage.</li>
-<li>Enable & Disable easily from settings</li>
+<li>Enable & disable easily from settings</li>
 </ul>
