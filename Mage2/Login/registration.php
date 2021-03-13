@@ -1,7 +1,10 @@
 <?php
+/**
+ * Product Name: Mage2 Force to Login
+ * Module Name: Mage2_Login
+ * Created By: Yogesh Shishangiya
+ */
 
-\Magento\Framework\Component\ComponentRegistrar::register(
-    \Magento\Framework\Component\ComponentRegistrar::MODULE,
-    'Mage2_Login',
-    __DIR__
-);
+use Magento\Framework\Component\ComponentRegistrar;
+
+ComponentRegistrar::register(ComponentRegistrar::MODULE, 'Mage2_Login', __DIR__);

@@ -1,47 +1,72 @@
 <?php
+/**
+ * Product Name: Mage2 Force to Login
+ * Module Name: Mage2_Login
+ * Created By: Yogesh Shishangiya
+ */
+
+declare(strict_types=1);
+
 namespace Mage2\Login\Observer;
 
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
- 
+use Magento\Framework\App\ResponseFactory;
+use Magento\Framework\UrlInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Customer\Model\Session;
+
+/**
+ * Class BeforeLogin
+ *
+ * @package Mage2\Login\Observer
+ */
 class BeforeLogin implements ObserverInterface
 {
     /**
-     * @var customerSession
-    */
+     * @var Session
+     */
     protected $customerSession;
-    
+
     /**
-     * @var responseFactory
-    */
+     * @var ResponseFactory
+     */
     protected $responseFactory;
 
     /**
-     * @var url
-    */
+     * @var UrlInterface
+     */
     protected $url;
 
     /**
-     * @var scopeConfig
-    */
+     * @var ScopeConfigInterface
+     */
     protected $scopeConfig;
 
+    /**
+     * BeforeLogin constructor.
+     *
+     * @param ResponseFactory $responseFactory
+     * @param UrlInterface $url
+     * @param ScopeConfigInterface $scopeConfig
+     * @param Session $customerSession
+     */
     public function __construct(
-        \Magento\Framework\App\ResponseFactory $responseFactory,
-        \Magento\Framework\UrlInterface $url,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Customer\Model\Session $customerSession
+        ResponseFactory $responseFactory,
+        UrlInterface $url,
+        ScopeConfigInterface $scopeConfig,
+        Session $customerSession
     ) {
         $this->customerSession = $customerSession;
         $this->responseFactory = $responseFactory;
-        $this->scopeConfig = $scopeConfig;
-        $this->url = $url;
+        $this->scopeConfig     = $scopeConfig;
+        $this->url             = $url;
     }
- 
+
     /**
-     * customer register event handler
+     * Customer register event handler
      *
-     * @param \Magento\Framework\Event\Observer $observer
+     * @param Observer $observer
      * @return void
      */
     public function execute(Observer $observer)
@@ -50,8 +75,8 @@ class BeforeLogin implements ObserverInterface
 
         if ($isEnable) {
             $actionName = $observer->getEvent()->getRequest()->getFullActionName();
-            
-            $openActions = array(
+
+            $openActions = [
                 'customer_account_login',
                 'customer_account_loginPost',
                 'customer_account_create',
@@ -60,10 +85,10 @@ class BeforeLogin implements ObserverInterface
                 'customer_account_forgotpasswordpost',
                 'customer_account_index',
                 'newsletter_subscriber_new',
-            );
+            ];
 
             if (in_array($actionName, $openActions)) {
-                return ; //if in allowed actions do nothing.
+                return; //if in allowed actions do nothing.
             }
 
             if (!$this->customerSession->isLoggedIn()) {
