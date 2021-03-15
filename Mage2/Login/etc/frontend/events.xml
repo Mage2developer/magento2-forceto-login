@@ -1,6 +1,14 @@
 <?xml version="1.0"?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+<!--
+/**
+ * Product Name: Mage2 Force to Login
+ * Module Name: Mage2_Login
+ * Created By: Yogesh Shishangiya
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
     <event name="controller_action_predispatch">
-        <observer name="checklogin" instance="Mage2\Login\Observer\beforeLogin" />
+        <observer name="checklogin" instance="Mage2\Login\Observer\BeforeLogin"/>
     </event>
 </config>

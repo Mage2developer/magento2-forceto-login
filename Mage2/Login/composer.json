@@ -1,16 +1,13 @@
 {
-    "name": "mage2/force-to-login",
-    "description": "",
+    "name": "mage2/module-force-to-login",
+    "description": "Mage2 Force to Login",
     "require": {
         "php": "^7.2"
     },
-    "suggest": {
-
-    },
     "type": "magento2-module",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "license": [
-
+        "BSD-3-Clause"
     ],
     "autoload": {
         "files": [
@@ -19,6 +16,5 @@
         "psr-4": {
             "Mage2\\Login\\": ""
         }
-    },
-    "extra": { }
+    }
 }
