@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Product Name: Mage2 Force to Login
+ * Module Name: Mage2_Login
+ * Created By: Yogesh Shishangiya
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <mage2_login_section>
+            <general>
+                <enabled>0</enabled>
+                <allowed_pages>home</allowed_pages>
+            </general>
+        </mage2_login_section>
+    </default>
+</config>

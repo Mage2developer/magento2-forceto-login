@@ -11,10 +11,9 @@ namespace Mage2\Login\Observer;
 
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
-use Magento\Framework\App\ResponseFactory;
-use Magento\Framework\UrlInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Customer\Model\Session;
+use Magento\Framework\App\Response\RedirectInterface;
 
 /**
  * Class BeforeLogin
@@ -29,72 +28,75 @@ class BeforeLogin implements ObserverInterface
     protected $customerSession;
 
     /**
-     * @var ResponseFactory
-     */
-    protected $responseFactory;
-
-    /**
-     * @var UrlInterface
-     */
-    protected $url;
-
-    /**
      * @var ScopeConfigInterface
      */
     protected $scopeConfig;
 
     /**
+     * @var RedirectInterface
+     */
+    protected $redirect;
+
+    /**
      * BeforeLogin constructor.
      *
-     * @param ResponseFactory $responseFactory
-     * @param UrlInterface $url
      * @param ScopeConfigInterface $scopeConfig
      * @param Session $customerSession
+     * @param RedirectInterface $redirect
      */
     public function __construct(
-        ResponseFactory $responseFactory,
-        UrlInterface $url,
         ScopeConfigInterface $scopeConfig,
-        Session $customerSession
-    ) {
+        Session $customerSession,
+        RedirectInterface $redirect
+    )
+    {
         $this->customerSession = $customerSession;
-        $this->responseFactory = $responseFactory;
         $this->scopeConfig     = $scopeConfig;
-        $this->url             = $url;
+        $this->redirect        = $redirect;
     }
 
     /**
      * Customer register event handler
      *
      * @param Observer $observer
-     * @return void
+     * @return $this|void
      */
     public function execute(Observer $observer)
     {
-        $isEnable = $this->scopeConfig->getValue('mage2_login_section/general/enabled', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        if ($this->customerSession->isLoggedIn()) {
+            return;
+        }
+
+        $isEnable     = $this->scopeConfig->getValue('mage2_login_section/general/enabled', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        $allowedPages = $this->scopeConfig->getValue('mage2_login_section/general/allowed_pages', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+
+        $arrPages = explode(",", $allowedPages);
+
+        $openActions = [
+            'customer_account_login',
+            'customer_account_loginPost',
+            'customer_account_create',
+            'customer_account_createpost',
+            'customer_account_forgotpassword',
+            'customer_account_forgotpasswordpost',
+            'customer_account_index',
+            'newsletter_subscriber_new',
+        ];
+
+        $openActions = array_merge($openActions, $arrPages);
 
         if ($isEnable) {
             $actionName = $observer->getEvent()->getRequest()->getFullActionName();
-
-            $openActions = [
-                'customer_account_login',
-                'customer_account_loginPost',
-                'customer_account_create',
-                'customer_account_createpost',
-                'customer_account_forgotpassword',
-                'customer_account_forgotpasswordpost',
-                'customer_account_index',
-                'newsletter_subscriber_new',
-            ];
 
             if (in_array($actionName, $openActions)) {
                 return; //if in allowed actions do nothing.
             }
 
             if (!$this->customerSession->isLoggedIn()) {
-                $CustomRedirectionUrl = $this->url->getUrl('customer/account/login');
-                $this->responseFactory->create()->setRedirect($CustomRedirectionUrl)->sendResponse();
-                exit;
+                $controller = $observer->getControllerAction();
+                $this->redirect->redirect($controller->getResponse(), 'customer/account/login');
+
+                return $this;
             }
         }
     }
