@@ -29,8 +29,8 @@ class AllowedPages implements OptionSourceInterface
     {
         $optionArray = [
             ['value' => 'cms_index_index', 'label' => __('Home Page')],
-            ['value' => 'catalog_category_view', 'label' => __('Category Page')],
-            ['value' => 'catalog_product_view', 'label' => __('Product Page')],
+            // ['value' => 'catalog_category_view', 'label' => __('Category Page')],
+            // ['value' => 'catalog_product_view', 'label' => __('Product Page')],
             ['value' => 'catalogsearch_result_index', 'label' => __('Catalog Search Result')]
         ];
 
